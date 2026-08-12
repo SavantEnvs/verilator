@@ -1,0 +1,9 @@
+project: savantenvs/verilator
+target: vl-dbg-msgf
+
+# libFuzzer harness exercising the Verilated runtime's VL_DBG_MSGF()/VL_SFORMATF_N_NX() formatters
+# (include/verilated.cpp): fuzzer bytes as the Verilog $display format string, fixed typed args;
+# compiled + linked with the project sanitized.
+cmds:
+  - cmd: /mayhem/fuzz_VL_DBG_MSGF
+    libfuzzer: true
