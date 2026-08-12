@@ -1,0 +1,16 @@
+project: savantenvs/verilator
+target: verilator-bin
+
+# Sanitized file-input CLI via verilator_fuzz (open+execv launcher). The launcher performs an
+# explicit read of @@ for Mayhem smoketest compat and then execv()s /mayhem/verilator_bin
+# (same PID — coverage follows into the instrumented front-end). All verilator scratch goes to
+# /dev/shm, the only writable path under Mayhem's read-only image mount.
+# Verilator is format-gated (it parses SystemVerilog), so starter seeds are wired below.
+testsuite:
+  - https://$MAYHEM_DOMAIN/$MAYHEM_PROJECT/$MAYHEM_TARGET/testsuite.tar
+  - file://mayhem/verilator-bin/testsuite
+cmds:
+  - cmd: /mayhem/verilator_fuzz @@
+    timeout: 30
+    env:
+      MFUZZ_COMPAT_LEVEL: "2"
